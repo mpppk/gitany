@@ -27,24 +27,25 @@ type Client struct {
 
 func (c *Client) GetRepositories() service.RepositoriesService {
 	return service.RepositoriesService(&repositoriesService{
-		raw: c.rawClient.GetRepositories(),
+		raw:  c.rawClient.GetRepositories(),
 		host: c.host,
 	})
 }
 
 func (c *Client) GetIssues() service.IssuesService {
 	return service.IssuesService(&issuesService{
-		raw: c.rawClient.GetIssues(),
-		repositoriesService: c.GetRepositories(),
+		client:    c,
+		rawClient: c.rawClient,
+		//repositoriesService: c.GetRepositories(),
 		ListOptions: c.ListOptions,
 	})
 }
 
 func (c *Client) GetPullRequests() service.PullRequestsService {
 	return service.PullRequestsService(&pullRequestsService{
-		raw: c.rawClient.GetPullRequests(),
+		raw:                 c.rawClient.GetPullRequests(),
 		repositoriesService: c.GetRepositories(),
-		ListOptions: c.ListOptions,
+		ListOptions:         c.ListOptions,
 	})
 }
 
@@ -60,7 +61,7 @@ func (c *Client) GetAuthorizations() service.AuthorizationsService {
 	})
 }
 
-type ClientGenerator struct {}
+type ClientGenerator struct{}
 
 func (cb *ClientGenerator) New(ctx context.Context, serviceConfig *etc.ServiceConfig) (service.Client, error) {
 	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: serviceConfig.Token})

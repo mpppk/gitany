@@ -11,8 +11,9 @@ import (
 
 type issuesService struct {
 	projectsService service.RepositoriesService
+	rawClient       rawClient
 	raw             IssuesService
-	ListOptions   *gitlab.ListOptions
+	ListOptions     *gitlab.ListOptions
 }
 
 func (i *issuesService) ListByRepo(ctx context.Context, owner, repo string) (serviceIssues []service.Issue, err error) {
@@ -24,6 +25,19 @@ func (i *issuesService) ListByRepo(ctx context.Context, owner, repo string) (ser
 	}
 
 	return serviceIssues, errors.Wrap(err, "Failed to get Issues by raw client in gitlab.Client.GetIssues")
+}
+
+func (i *issuesService) ListLabels(ctx context.Context, owner string, repo string) (labels []service.Label, err error) {
+	gitlabLabels, _, err := i.rawClient.Labels.ListLabels(owner+"/"+repo, nil)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to fetch labels in gitlab.Client.ListLabels")
+	}
+
+	for _, githubLabel := range gitlabLabels {
+		labels = append(labels, &Label{Label: githubLabel})
+	}
+
+	return labels, nil
 }
 
 func (i *issuesService) GetIssuesURL(owner, repo string) (string, error) {

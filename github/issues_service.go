@@ -10,9 +10,9 @@ import (
 )
 
 type issuesService struct {
-	repositoriesService service.RepositoriesService
-	raw             IssuesService
-	ListOptions   *github.ListOptions
+	rawClient   RawClient
+	client      service.Client
+	ListOptions *github.ListOptions
 }
 
 func (i *issuesService) GetIssuesURL(owner, repo string) (string, error) {
@@ -20,7 +20,7 @@ func (i *issuesService) GetIssuesURL(owner, repo string) (string, error) {
 		return "", errors.Wrap(err, "Invalid owner or repo was passed to GetIssuesURL")
 	}
 
-	repoUrl, err := i.repositoriesService.GetURL(owner, repo)
+	repoUrl, err := i.client.GetRepositories().GetURL(owner, repo)
 	return repoUrl + "/issues", errors.Wrap(err, "Error occurred in github.Client.GetIssuesURL")
 }
 
@@ -34,7 +34,7 @@ func (i *issuesService) ListByRepo(ctx context.Context, owner, repo string) (ser
 	issues, err := i.getGitHubIssues(ctx, owner, repo, opt)
 
 	if err != nil {
-		return nil, errors.Wrap(err, "Failed to get Issues by raw client in github.Client.GetIssues")
+		return nil, errors.Wrap(err, "Failed to get Issues by rawClient client in github.Client.GetIssues")
 	}
 
 	for _, issue := range issues {
@@ -45,7 +45,7 @@ func (i *issuesService) ListByRepo(ctx context.Context, owner, repo string) (ser
 }
 
 func (i *issuesService) getGitHubIssues(ctx context.Context, owner, repo string, opt *github.IssueListByRepoOptions) (issues []*github.Issue, err error) {
-	issuesAndPRs, _, err := i.raw.ListByRepo(ctx, owner, repo, opt)
+	issuesAndPRs, _, err := i.rawClient.GetIssues().ListByRepo(ctx, owner, repo, opt)
 
 	if err != nil {
 		return nil, errors.Wrap(err, "Error occurred in github.Client.getGitHubIssues")
@@ -57,4 +57,17 @@ func (i *issuesService) getGitHubIssues(ctx context.Context, owner, repo string,
 		}
 	}
 	return issues, nil
+}
+
+func (i *issuesService) ListLabels(ctx context.Context, owner string, repo string) (labels []service.Label, err error) {
+	githubLabels, _, err := i.rawClient.GetIssues().ListLabels(ctx, owner, repo, nil)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to fetch labels in github.Client.getGitHubIssues")
+	}
+
+	for _, githubLabel := range githubLabels {
+		labels = append(labels, githubLabel)
+	}
+
+	return labels, nil
 }

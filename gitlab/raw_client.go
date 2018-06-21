@@ -24,6 +24,10 @@ type IssuesService interface {
 	ListProjectIssues(pid interface{}, opt *gitlab.ListProjectIssuesOptions, options ...gitlab.OptionFunc) ([]*gitlab.Issue, *gitlab.Response, error)
 }
 
+type LabelsService interface {
+	ListLabels(pid interface{}, opt *gitlab.ListLabelsOptions, options ...gitlab.OptionFunc) ([]*gitlab.Label, *gitlab.Response, error)
+}
+
 type MergeRequestsService interface {
 	ListProjectMergeRequests(pid interface{}, opt *gitlab.ListProjectMergeRequestsOptions, options ...gitlab.OptionFunc) ([]*gitlab.MergeRequest, *gitlab.Response, error)
 	CreateMergeRequest(pid interface{}, opt *gitlab.CreateMergeRequestOptions, options ...gitlab.OptionFunc) (*gitlab.MergeRequest, *gitlab.Response, error)

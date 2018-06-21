@@ -29,6 +29,7 @@ type RepositoriesService interface {
 
 type IssuesService interface {
 	ListByRepo(ctx context.Context, owner, repo string) ([]Issue, error)
+	ListLabels(ctx context.Context, owner string, repo string) ([]Label, error)
 	GetIssuesURL(owner, repo string) (string, error)
 	GetURL(owner, repo string, no int) (string, error)
 }
