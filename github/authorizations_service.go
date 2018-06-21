@@ -13,7 +13,7 @@ type authorizationsService struct {
 }
 
 func (a *authorizationsService) CreateToken(ctx context.Context) (string, error) {
-	note, err := a.getUniqueNote(ctx, "hlb")
+	note, err := a.getUniqueNote(ctx, "gitany")
 	if err != nil {
 		return "", err
 	}

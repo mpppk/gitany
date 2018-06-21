@@ -3,7 +3,7 @@ package service
 import (
 	"context"
 
-	"github.com/mpppk/hlb/etc"
+	"github.com/mpppk/gitany/etc"
 )
 
 type NewPullRequest struct {
@@ -24,6 +24,7 @@ type RepositoriesService interface {
 	GetCommitsURL(owner, repo string) (string, error)
 	Create(ctx context.Context, repo string) (Repository, error)
 	CreateRelease(ctx context.Context, owner, repo string, newRelease *NewRelease) (Release, error)
+	ListByOrg(ctx context.Context, org string) ([]Repository, error)
 }
 
 type IssuesService interface {

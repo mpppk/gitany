@@ -6,8 +6,8 @@ import (
 
 	"strings"
 
-	"github.com/mpppk/hlb/etc"
-	"github.com/mpppk/hlb/service"
+	"github.com/mpppk/gitany/etc"
+	"github.com/mpppk/gitany/service"
 	"github.com/pkg/errors"
 	"github.com/xanzy/go-gitlab"
 )
@@ -19,21 +19,21 @@ type Client struct {
 	ListOptions   *gitlab.ListOptions
 }
 
-type ClientBuilder struct {}
+type ClientGenerator struct{}
 
 func (c *Client) GetRepositories() service.RepositoriesService {
 	return service.RepositoriesService(&repositoriesService{
-		raw: c.rawClient.GetProjects(),
-		host: c.host,
+		raw:           c.rawClient,
+		host:          c.host,
 		serviceConfig: c.serviceConfig,
-		})
+	})
 }
 
 func (c *Client) GetIssues() service.IssuesService {
 	return service.IssuesService(&issuesService{
-		raw: c.rawClient.GetIssues(),
+		raw:             c.rawClient.GetIssues(),
 		projectsService: c.GetRepositories(),
-		ListOptions: c.ListOptions,
+		ListOptions:     c.ListOptions,
 	})
 }
 
@@ -55,22 +55,22 @@ func (c *Client) GetProjects() service.ProjectsService {
 	})
 }
 
-func (cb *ClientBuilder) New(ctx context.Context, serviceConfig *etc.ServiceConfig) (service.Client, error) {
+func (cb *ClientGenerator) New(ctx context.Context, serviceConfig *etc.ServiceConfig) (service.Client, error) {
 	rawClient := newGitLabRawClient(serviceConfig)
 	return newClientFromRawClient(serviceConfig, rawClient), nil
 }
 
-func (cb *ClientBuilder) NewViaBasicAuth(ctx context.Context, serviceConfig *etc.ServiceConfig, user, pass string) (service.Client, error) {
-	panic("gitlab.ClientBuilder.NewViaBasicAuth is not implemented yet")
+func (cb *ClientGenerator) NewViaBasicAuth(ctx context.Context, serviceConfig *etc.ServiceConfig, user, pass string) (service.Client, error) {
+	panic("gitlab.ClientGenerator.NewViaBasicAuth is not implemented yet")
 }
 
-func (cb *ClientBuilder) GetType() string {
+func (cb *ClientGenerator) GetType() string {
 	return "gitlab"
 }
 
 func newGitLabRawClient(serviceConfig *etc.ServiceConfig) *rawClient {
 	client := gitlab.NewClient(nil, serviceConfig.Token)
-	client.SetBaseURL(serviceConfig.Protocol + "://" + serviceConfig.Host + "/api/v3")
+	client.SetBaseURL(serviceConfig.Protocol + "://" + serviceConfig.Host)
 	return &rawClient{Client: client}
 }
 

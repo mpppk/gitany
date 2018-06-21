@@ -1,8 +1,11 @@
 package service
 
 type Issue interface {
-	GetNumber() int
-	GetTitle() string
+	GetBody() string
 	GetHTMLURL() string
+	GetID() int64
+	GetNumber() int
+	GetRepository() Repository
+	GetTitle() string
 }
 

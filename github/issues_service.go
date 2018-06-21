@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/google/go-github/github"
-	"github.com/mpppk/hlb/service"
+	"github.com/mpppk/gitany/service"
 	"github.com/pkg/errors"
 )
 

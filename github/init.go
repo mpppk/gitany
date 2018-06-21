@@ -1,7 +1,7 @@
 package github
 
-import "github.com/mpppk/hlb/hlblib"
+import "github.com/mpppk/gitany"
 
 func init() {
-	hlblib.RegisterClientGenerator(&ClientBuilder{})
+	gitany.RegisterClientGenerator(&ClientGenerator{})
 }

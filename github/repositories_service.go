@@ -5,12 +5,12 @@ import (
 	"fmt"
 
 	"github.com/google/go-github/github"
-	"github.com/mpppk/hlb/service"
+	"github.com/mpppk/gitany/service"
 	"github.com/pkg/errors"
 )
 
 type repositoriesService struct {
-	raw RepositoriesService
+	raw  RepositoriesService
 	host string
 }
 
@@ -47,6 +47,19 @@ func (r *repositoriesService) GetWikisURL(owner, repo string) (string, error) {
 func (r *repositoriesService) GetCommitsURL(owner, repo string) (string, error) {
 	repoUrl, err := r.GetURL(owner, repo)
 	return repoUrl + "/commits", errors.Wrap(err, "Error occurred in github.Client.GetCommitsURL")
+}
+
+func (r *repositoriesService) ListByOrg(ctx context.Context, org string) (repos []service.Repository, err error) {
+	githubRepos, _, err := r.raw.ListByOrg(ctx, org, nil)
+	if err != nil {
+		return nil, errors.Wrap(err, "Error occurred in github.Client.ListByOrg")
+	}
+
+	for _, githubRepo := range githubRepos {
+		repos = append(repos, service.Repository(githubRepo))
+	}
+
+	return repos, nil
 }
 
 func (r *repositoriesService) CreateRelease(ctx context.Context, owner, repo string, newRelease *service.NewRelease) (service.Release, error) {

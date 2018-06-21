@@ -4,15 +4,15 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/mpppk/hlb/etc"
-	"github.com/mpppk/hlb/service"
+	"github.com/mpppk/gitany/etc"
+	"github.com/mpppk/gitany/service"
 	"github.com/pkg/errors"
 	"github.com/xanzy/go-gitlab"
 )
 
 type repositoriesService struct {
-	raw ProjectsService
-	host string
+	raw           RawClient
+	host          string
 	serviceConfig *etc.ServiceConfig
 }
 
@@ -22,7 +22,7 @@ func (r *repositoriesService) GetURL(owner, repo string) (string, error) {
 }
 
 func (r *repositoriesService) Get(ctx context.Context, owner, repo string) (service.Repository, error) {
-	project, _, err := r.raw.GetProject(owner + "/" + repo)
+	project, _, err := r.raw.GetProjects().GetProject(owner + "/" + repo)
 
 	if err != nil {
 		return nil, errors.Wrap(err, "Failed to get Repository by raw client in gitlab.Client.GetRepository")
@@ -33,7 +33,7 @@ func (r *repositoriesService) Get(ctx context.Context, owner, repo string) (serv
 
 func (r *repositoriesService) Create(ctx context.Context, repo string) (service.Repository, error) {
 	opt := &gitlab.CreateProjectOptions{Name: &repo}
-	retRepository, _, err := r.raw.CreateProject(opt)
+	retRepository, _, err := r.raw.GetProjects().CreateProject(opt)
 	return &Repository{retRepository}, err
 }
 
@@ -62,4 +62,16 @@ func (r *repositoriesService) CreateRelease(ctx context.Context, owner, repo str
 	//opt := &gitlab.CreateTagOptions{}
 	//tag, _, err := r.rawClient.GetTags().CreateTag(owner+"/"+repo, opt)
 	//return tag, err
+}
+
+func (r *repositoriesService) ListByOrg(ctx context.Context, org string) (repos []service.Repository, err error) {
+	projects, _, err := r.raw.GetGroups().ListGroupProjects(org, nil) // FIXME
+	if err != nil {
+		return nil, errors.Wrap(err, "Error occurred in gitlab.Client.RepositoriesService.ListByOrg")
+	}
+
+	for _, project := range projects {
+		repos = append(repos, &Repository{project})
+	}
+	return repos, nil
 }

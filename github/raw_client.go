@@ -20,6 +20,7 @@ type RepositoriesService interface {
 	Get(ctx context.Context, owner, repo string) (*github.Repository, *github.Response, error)
 	Create(ctx context.Context, org string, repo *github.Repository) (*github.Repository, *github.Response, error)
 	CreateRelease(ctx context.Context, owner, repo string, release *github.RepositoryRelease) (*github.RepositoryRelease, *github.Response, error)
+	ListByOrg(ctx context.Context, org string, opt *github.RepositoryListByOrgOptions) ([]*github.Repository, *github.Response, error)
 }
 
 type IssuesService interface {

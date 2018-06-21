@@ -4,6 +4,7 @@ import "github.com/xanzy/go-gitlab"
 
 type RawClient interface {
 	GetProjects() ProjectsService
+	GetGroups() GroupsService
 	GetMergeRequests() MergeRequestsService
 	GetIssues() IssuesService
 	//GetTags() tagsService
@@ -13,6 +14,10 @@ type RawClient interface {
 type ProjectsService interface {
 	GetProject(pid interface{}, options ...gitlab.OptionFunc) (*gitlab.Project, *gitlab.Response, error)
 	CreateProject(opt *gitlab.CreateProjectOptions, options ...gitlab.OptionFunc) (*gitlab.Project, *gitlab.Response, error)
+}
+
+type GroupsService interface {
+	ListGroupProjects(gid interface{}, opt *gitlab.ListGroupProjectsOptions, options ...gitlab.OptionFunc) ([]*gitlab.Project, *gitlab.Response, error)
 }
 
 type IssuesService interface {
@@ -34,6 +39,10 @@ type rawClient struct {
 
 func (r *rawClient) GetProjects() ProjectsService {
 	return ProjectsService(r.Projects)
+}
+
+func (r *rawClient) GetGroups() GroupsService {
+	return GroupsService(r.Groups)
 }
 
 func (r *rawClient) GetIssues() IssuesService {

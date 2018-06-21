@@ -7,8 +7,8 @@ import (
 	"strings"
 
 	"github.com/google/go-github/github"
-	"github.com/mpppk/hlb/etc"
-	"github.com/mpppk/hlb/service"
+	"github.com/mpppk/gitany/etc"
+	"github.com/mpppk/gitany/service"
 	"github.com/pkg/errors"
 	"golang.org/x/oauth2"
 )
@@ -60,15 +60,15 @@ func (c *Client) GetAuthorizations() service.AuthorizationsService {
 	})
 }
 
-type ClientBuilder struct {}
+type ClientGenerator struct {}
 
-func (cb *ClientBuilder) New(ctx context.Context, serviceConfig *etc.ServiceConfig) (service.Client, error) {
+func (cb *ClientGenerator) New(ctx context.Context, serviceConfig *etc.ServiceConfig) (service.Client, error) {
 	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: serviceConfig.Token})
 	tc := oauth2.NewClient(ctx, ts)
 	return newServiceFromClient(serviceConfig, &rawClient{Client: github.NewClient(tc)})
 }
 
-func (cb *ClientBuilder) NewViaBasicAuth(ctx context.Context, serviceConfig *etc.ServiceConfig, user, pass string) (service.Client, error) {
+func (cb *ClientGenerator) NewViaBasicAuth(ctx context.Context, serviceConfig *etc.ServiceConfig, user, pass string) (service.Client, error) {
 	tp := github.BasicAuthTransport{
 		Username: strings.TrimSpace(user),
 		Password: strings.TrimSpace(pass),
@@ -76,7 +76,7 @@ func (cb *ClientBuilder) NewViaBasicAuth(ctx context.Context, serviceConfig *etc
 	return newServiceFromClient(serviceConfig, &rawClient{Client: github.NewClient(tp.Client())})
 }
 
-func (cb *ClientBuilder) GetType() string {
+func (cb *ClientGenerator) GetType() string {
 	return "github"
 }
 
