@@ -5,13 +5,13 @@ import (
 	"fmt"
 
 	"github.com/google/go-github/github"
-	"github.com/mpppk/gitany/service"
+	"github.com/mpppk/gitany"
 	"github.com/pkg/errors"
 )
 
 type issuesService struct {
 	rawClient   RawClient
-	client      service.Client
+	client      gitany.Client
 	ListOptions *github.ListOptions
 }
 
@@ -29,7 +29,7 @@ func (i *issuesService) GetURL(owner, repo string, id int) (string, error) {
 	return fmt.Sprintf("%s/%d", url, id), errors.Wrap(err, "Error occurred in github.Client.GetIssueURL")
 }
 
-func (i *issuesService) ListByRepo(ctx context.Context, owner, repo string) (serviceIssues []service.Issue, err error) {
+func (i *issuesService) ListByRepo(ctx context.Context, owner, repo string) (serviceIssues []gitany.Issue, err error) {
 	opt := &github.IssueListByRepoOptions{ListOptions: *i.ListOptions}
 	issues, err := i.getGitHubIssues(ctx, owner, repo, opt)
 
@@ -59,7 +59,7 @@ func (i *issuesService) getGitHubIssues(ctx context.Context, owner, repo string,
 	return issues, nil
 }
 
-func (i *issuesService) ListLabels(ctx context.Context, owner string, repo string) (labels []service.Label, err error) {
+func (i *issuesService) ListLabels(ctx context.Context, owner string, repo string) (labels []gitany.Label, err error) {
 	githubLabels, _, err := i.rawClient.GetIssues().ListLabels(ctx, owner, repo, nil)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to fetch labels in github.Client.getGitHubIssues")

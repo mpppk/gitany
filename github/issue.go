@@ -2,15 +2,14 @@ package github
 
 import (
 	"github.com/google/go-github/github"
-	"github.com/mpppk/gitany/service"
+	"github.com/mpppk/gitany"
 )
 
 type Issue struct {
 	*github.Issue
 }
 
-func (i *Issue) GetRepository() service.Repository {
+func (i *Issue) GetRepository() gitany.Repository {
 	repo := i.Issue.GetRepository()
-	return service.Repository(repo)
+	return gitany.Repository(repo)
 }
-

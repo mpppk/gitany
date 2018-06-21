@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/mpppk/gitany"
 	"github.com/mpppk/gitany/etc"
-	"github.com/mpppk/gitany/service"
 	"github.com/pkg/errors"
 	"github.com/xanzy/go-gitlab"
 )
@@ -21,7 +21,7 @@ func (r *repositoriesService) GetURL(owner, repo string) (string, error) {
 	return fmt.Sprintf("%s://%s/%s/%s", r.serviceConfig.Protocol, r.host, owner, repo), errors.Wrap(err, "Error occurred in gitlab.Client.GetRepositoryURL")
 }
 
-func (r *repositoriesService) Get(ctx context.Context, owner, repo string) (service.Repository, error) {
+func (r *repositoriesService) Get(ctx context.Context, owner, repo string) (gitany.Repository, error) {
 	project, _, err := r.raw.GetProjects().GetProject(owner + "/" + repo)
 
 	if err != nil {
@@ -31,7 +31,7 @@ func (r *repositoriesService) Get(ctx context.Context, owner, repo string) (serv
 	return &Repository{Project: project}, err
 }
 
-func (r *repositoriesService) Create(ctx context.Context, repo string) (service.Repository, error) {
+func (r *repositoriesService) Create(ctx context.Context, repo string) (gitany.Repository, error) {
 	opt := &gitlab.CreateProjectOptions{Name: &repo}
 	retRepository, _, err := r.raw.GetProjects().CreateProject(opt)
 	return &Repository{retRepository}, err
@@ -57,14 +57,14 @@ func (r *repositoriesService) GetCommitsURL(owner, repo string) (string, error) 
 	return repoUrl + "/commits/master", errors.Wrap(err, "Error occurred in gitlab.Client.GetCommitsURL")
 }
 
-func (r *repositoriesService) CreateRelease(ctx context.Context, owner, repo string, newRelease *service.NewRelease) (service.Release, error) {
+func (r *repositoriesService) CreateRelease(ctx context.Context, owner, repo string, newRelease *gitany.NewRelease) (gitany.Release, error) {
 	panic("Not Implemented Yet")
 	//opt := &gitlab.CreateTagOptions{}
 	//tag, _, err := r.rawClient.GetTags().CreateTag(owner+"/"+repo, opt)
 	//return tag, err
 }
 
-func (r *repositoriesService) ListByOrg(ctx context.Context, org string) (repos []service.Repository, err error) {
+func (r *repositoriesService) ListByOrg(ctx context.Context, org string) (repos []gitany.Repository, err error) {
 	projects, _, err := r.raw.GetGroups().ListGroupProjects(org, nil) // FIXME
 	if err != nil {
 		return nil, errors.Wrap(err, "Error occurred in gitlab.Client.RepositoriesService.ListByOrg")

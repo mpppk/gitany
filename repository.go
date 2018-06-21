@@ -1,4 +1,4 @@
-package service
+package gitany
 
 type Repository interface {
 	GetHTMLURL() string

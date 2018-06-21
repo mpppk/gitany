@@ -1,4 +1,4 @@
-package service
+package gitany
 
 type Issue interface {
 	GetBody() string
@@ -8,4 +8,3 @@ type Issue interface {
 	GetRepository() Repository
 	GetTitle() string
 }
-

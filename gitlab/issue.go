@@ -1,7 +1,7 @@
 package gitlab
 
 import (
-	"github.com/mpppk/gitany/service"
+	"github.com/mpppk/gitany"
 	"github.com/xanzy/go-gitlab"
 )
 
@@ -22,7 +22,7 @@ func (issue *Issue) GetNumber() int {
 	return issue.IID
 }
 
-func (issue *Issue) GetRepository() service.Repository {
+func (issue *Issue) GetRepository() gitany.Repository {
 	return &Repository{Project: issue.project}
 }
 

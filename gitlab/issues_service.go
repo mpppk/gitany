@@ -4,19 +4,19 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/mpppk/gitany/service"
+	"github.com/mpppk/gitany"
 	"github.com/pkg/errors"
 	"github.com/xanzy/go-gitlab"
 )
 
 type issuesService struct {
-	projectsService service.RepositoriesService
+	projectsService gitany.RepositoriesService
 	rawClient       rawClient
 	raw             IssuesService
 	ListOptions     *gitlab.ListOptions
 }
 
-func (i *issuesService) ListByRepo(ctx context.Context, owner, repo string) (serviceIssues []service.Issue, err error) {
+func (i *issuesService) ListByRepo(ctx context.Context, owner, repo string) (serviceIssues []gitany.Issue, err error) {
 	opt := &gitlab.ListProjectIssuesOptions{ListOptions: *i.ListOptions}
 	issues, _, err := i.raw.ListProjectIssues(owner+"/"+repo, opt)
 
@@ -27,7 +27,7 @@ func (i *issuesService) ListByRepo(ctx context.Context, owner, repo string) (ser
 	return serviceIssues, errors.Wrap(err, "Failed to get Issues by raw client in gitlab.Client.GetIssues")
 }
 
-func (i *issuesService) ListLabels(ctx context.Context, owner string, repo string) (labels []service.Label, err error) {
+func (i *issuesService) ListLabels(ctx context.Context, owner string, repo string) (labels []gitany.Label, err error) {
 	gitlabLabels, _, err := i.rawClient.Labels.ListLabels(owner+"/"+repo, nil)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to fetch labels in gitlab.Client.ListLabels")

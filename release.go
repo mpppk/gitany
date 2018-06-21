@@ -1,4 +1,4 @@
-package service
+package gitany
 
 type Release interface {
 	GetID() int64
