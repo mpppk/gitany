@@ -22,37 +22,37 @@ type Client struct {
 type ClientGenerator struct{}
 
 func (c *Client) GetRepositories() gitany.RepositoriesService {
-	return gitany.RepositoriesService(&repositoriesService{
+	return &repositoriesService{
 		raw:           c.rawClient,
 		host:          c.host,
 		serviceConfig: c.serviceConfig,
-	})
+	}
 }
 
 func (c *Client) GetIssues() gitany.IssuesService {
-	return gitany.IssuesService(&issuesService{
+	return &issuesService{
 		raw:             c.rawClient.GetIssues(),
 		projectsService: c.GetRepositories(),
 		ListOptions:     c.ListOptions,
-	})
+	}
 }
 
 func (c *Client) GetPullRequests() gitany.PullRequestsService {
-	return gitany.PullRequestsService(&pullRequestsService{
+	return &pullRequestsService{
 		raw:                 c.rawClient.GetMergeRequests(),
 		repositoriesService: c.GetRepositories(),
 		ListOptions:         c.ListOptions,
-	})
+	}
 }
 
 func (c *Client) GetAuthorizations() gitany.AuthorizationsService {
-	return gitany.AuthorizationsService(&authorizationsService{})
+	return &authorizationsService{}
 }
 
 func (c *Client) GetProjects() gitany.ProjectsService {
-	return gitany.ProjectsService(&projetsService{
+	return &projetsService{
 		repositoriesService: c.GetRepositories(),
-	})
+	}
 }
 
 func (cb *ClientGenerator) New(ctx context.Context, serviceConfig *etc.ServiceConfig) (gitany.Client, error) {

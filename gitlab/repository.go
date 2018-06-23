@@ -6,6 +6,10 @@ type Repository struct {
 	*gitlab.Project
 }
 
+func (repo *Repository) GetName() string {
+	return repo.Name
+}
+
 func (repo *Repository) GetHTMLURL() string {
 	return repo.WebURL
 }

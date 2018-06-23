@@ -17,6 +17,7 @@ type ProjectsService interface {
 }
 
 type GroupsService interface {
+	GetGroup(gid interface{}, options ...gitlab.OptionFunc) (*gitlab.Group, *gitlab.Response, error)
 	ListGroupProjects(gid interface{}, opt *gitlab.ListGroupProjectsOptions, options ...gitlab.OptionFunc) ([]*gitlab.Project, *gitlab.Response, error)
 }
 
@@ -42,19 +43,19 @@ type rawClient struct {
 }
 
 func (r *rawClient) GetProjects() ProjectsService {
-	return ProjectsService(r.Projects)
+	return r.Projects
 }
 
 func (r *rawClient) GetGroups() GroupsService {
-	return GroupsService(r.Groups)
+	return r.Groups
 }
 
 func (r *rawClient) GetIssues() IssuesService {
-	return IssuesService(r.Issues)
+	return r.Issues
 }
 
 func (r *rawClient) GetMergeRequests() MergeRequestsService {
-	return MergeRequestsService(r.MergeRequests)
+	return r.MergeRequests
 }
 
 //func (r *rawClient) GetTags() tagsService {
