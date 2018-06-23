@@ -23,6 +23,7 @@ type GroupsService interface {
 
 type IssuesService interface {
 	ListProjectIssues(pid interface{}, opt *gitlab.ListProjectIssuesOptions, options ...gitlab.OptionFunc) ([]*gitlab.Issue, *gitlab.Response, error)
+	ListGroupIssues(pid interface{}, opt *gitlab.ListGroupIssuesOptions, options ...gitlab.OptionFunc) ([]*gitlab.Issue, *gitlab.Response, error)
 }
 
 type LabelsService interface {

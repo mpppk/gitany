@@ -25,6 +25,7 @@ type RepositoriesService interface {
 
 type IssuesService interface {
 	ListByRepo(ctx context.Context, owner, repo string, opt *github.IssueListByRepoOptions) ([]*github.Issue, *github.Response, error)
+	ListByOrg(ctx context.Context, org string, opt *github.IssueListOptions) ([]*github.Issue, *github.Response, error)
 	ListLabels(ctx context.Context, owner string, repo string, opt *github.ListOptions) ([]*github.Label, *github.Response, error)
 }
 

@@ -27,6 +27,21 @@ func (i *issuesService) ListByRepo(ctx context.Context, owner, repo string) (ser
 	return serviceIssues, errors.Wrap(err, "Failed to get Issues by raw client in gitlab.Client.GetIssues")
 }
 
+func (i *issuesService) ListByOrg(ctx context.Context, org string, opt *gitany.IssueListOptions) ([]gitany.Issue, gitany.Response, error) {
+	gitlabOpt := toGitLabListGroupIssuesOptions(opt)
+	gitlabIssues, res, err := i.raw.ListGroupIssues(org, gitlabOpt)
+	if err != nil {
+		return nil, nil, errors.Wrap(err, "failed to get gitlab group issue")
+	}
+
+	var issues []gitany.Issue
+	for _, gitlabIssue := range gitlabIssues {
+		issues = append(issues, &Issue{Issue: gitlabIssue})
+	}
+
+	return issues, &Response{Response: res}, nil
+}
+
 func (i *issuesService) ListLabels(ctx context.Context, owner string, repo string) (labels []gitany.Label, err error) {
 	gitlabLabels, _, err := i.rawClient.Labels.ListLabels(owner+"/"+repo, nil)
 	if err != nil {

@@ -44,6 +44,22 @@ func (i *issuesService) ListByRepo(ctx context.Context, owner, repo string) (ser
 	return serviceIssues, errors.Wrap(err, "Error occurred in github.Client.GetIssues")
 }
 
+func (i *issuesService) ListByOrg(ctx context.Context, org string, opt *gitany.IssueListOptions) ([]gitany.Issue, gitany.Response, error) {
+	githubOpt := toGitHubIssueListOptions(opt)
+	githubIssues, res, err := i.rawClient.GetIssues().ListByOrg(ctx, org, githubOpt)
+	if err != nil {
+		return nil, &Response{Response: res}, errors.Wrap(err, "failed to list github organizations")
+	}
+
+	var issues []gitany.Issue
+	for _, githubIssue := range githubIssues {
+		issues = append(issues, &Issue{Issue: githubIssue})
+	}
+
+	return issues, &Response{Response: res}, nil
+
+}
+
 func (i *issuesService) getGitHubIssues(ctx context.Context, owner, repo string, opt *github.IssueListByRepoOptions) (issues []*github.Issue, err error) {
 	issuesAndPRs, _, err := i.rawClient.GetIssues().ListByRepo(ctx, owner, repo, opt)
 

@@ -18,3 +18,15 @@ func toGitHubRepositoryListByOrgOptions(opt *gitany.RepositoryListByOrgOptions) 
 		ListOptions: toGitHubListOptions(opt.ListOptions),
 	}
 }
+
+func toGitHubIssueListOptions(opt *gitany.IssueListOptions) *github.IssueListOptions {
+	return &github.IssueListOptions{
+		Filter:      opt.Filter,
+		State:       opt.State,
+		Labels:      opt.Labels,
+		Sort:        opt.Sort,
+		Direction:   opt.Direction,
+		Since:       opt.Since,
+		ListOptions: toGitHubListOptions(opt.ListOptions),
+	}
+}
