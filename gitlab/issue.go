@@ -26,8 +26,16 @@ func (issue *Issue) GetRepository() gitany.Repository {
 	return &Repository{Project: issue.project}
 }
 
+func (issue *Issue) GetRepositoryID() int64 {
+	return int64(issue.ProjectID)
+}
+
 func (issue *Issue) GetTitle() string {
 	return issue.Title
+}
+
+func (issue *Issue) GetLabels() []string {
+	return issue.Labels
 }
 
 func (issue *Issue) GetHTMLURL() string {

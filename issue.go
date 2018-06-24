@@ -5,6 +5,8 @@ type Issue interface {
 	GetHTMLURL() string
 	GetID() int64
 	GetNumber() int
-	GetRepository() Repository
+	GetRepositoryID() int64
+	//GetRepository() Repository
 	GetTitle() string
+	GetLabels() []string // FIXME
 }
