@@ -13,3 +13,7 @@ func (l *Label) GetID() int64 {
 func (l *Label) GetName() string {
 	return l.Name
 }
+
+func (l *Label) GetDescription() string {
+	return l.Description
+}

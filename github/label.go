@@ -7,7 +7,3 @@ import (
 type Label struct {
 	*github.Label
 }
-
-func (l *Label) GetName() string {
-	return l.GetName()
-}
