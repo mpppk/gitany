@@ -7,6 +7,7 @@ type RawClient interface {
 	GetGroups() GroupsService
 	GetMergeRequests() MergeRequestsService
 	GetIssues() IssuesService
+	GetLabels() LabelsService
 	//GetTags() tagsService
 	SetBaseURL(baseUrl string) error
 }
@@ -53,6 +54,10 @@ func (r *rawClient) GetGroups() GroupsService {
 
 func (r *rawClient) GetIssues() IssuesService {
 	return r.Issues
+}
+
+func (r *rawClient) GetLabels() LabelsService {
+	return r.Labels
 }
 
 func (r *rawClient) GetMergeRequests() MergeRequestsService {

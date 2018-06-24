@@ -31,9 +31,8 @@ func (c *Client) GetRepositories() gitany.RepositoriesService {
 
 func (c *Client) GetIssues() gitany.IssuesService {
 	return &issuesService{
-		raw:             c.rawClient.GetIssues(),
-		projectsService: c.GetRepositories(),
-		ListOptions:     c.ListOptions,
+		rawClient:   c.rawClient,
+		ListOptions: c.ListOptions,
 	}
 }
 

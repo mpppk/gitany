@@ -75,15 +75,17 @@ func (i *issuesService) getGitHubIssues(ctx context.Context, owner, repo string,
 	return issues, nil
 }
 
-func (i *issuesService) ListLabels(ctx context.Context, owner string, repo string) (labels []gitany.Label, err error) {
-	githubLabels, _, err := i.rawClient.GetIssues().ListLabels(ctx, owner, repo, nil)
+func (i *issuesService) ListLabels(ctx context.Context, owner string, repo string, opt *gitany.ListOptions) (labels []gitany.Label, res gitany.Response, err error) {
+	githubOpt := toGitHubListOptions(opt)
+
+	githubLabels, response, err := i.rawClient.GetIssues().ListLabels(ctx, owner, repo, &githubOpt)
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to fetch labels in github.Client.getGitHubIssues")
+		return nil, &Response{Response: response}, errors.Wrap(err, "failed to fetch labels in github.Client.ListLabels")
 	}
 
 	for _, githubLabel := range githubLabels {
 		labels = append(labels, githubLabel)
 	}
 
-	return labels, nil
+	return labels, &Response{Response: response}, nil
 }

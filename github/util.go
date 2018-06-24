@@ -5,7 +5,11 @@ import (
 	"github.com/mpppk/gitany"
 )
 
-func toGitHubListOptions(opt gitany.ListOptions) github.ListOptions {
+func toGitHubListOptions(opt *gitany.ListOptions) github.ListOptions {
+	if opt == nil {
+		return github.ListOptions{}
+	}
+
 	return github.ListOptions{
 		Page:    opt.Page,
 		PerPage: opt.PerPage,
@@ -13,20 +17,24 @@ func toGitHubListOptions(opt gitany.ListOptions) github.ListOptions {
 }
 
 func toGitHubRepositoryListByOrgOptions(opt *gitany.RepositoryListByOrgOptions) *github.RepositoryListByOrgOptions {
+	if opt == nil {
+		return nil
+	}
+
 	return &github.RepositoryListByOrgOptions{
 		Type:        opt.Type,
-		ListOptions: toGitHubListOptions(opt.ListOptions),
+		ListOptions: toGitHubListOptions(&opt.ListOptions),
 	}
 }
 
 func toGitHubIssueListOptions(opt *gitany.IssueListOptions) *github.IssueListOptions {
+	if opt == nil {
+		return nil
+	}
+
 	return &github.IssueListOptions{
-		Filter:      opt.Filter,
 		State:       opt.State,
 		Labels:      opt.Labels,
-		Sort:        opt.Sort,
-		Direction:   opt.Direction,
-		Since:       opt.Since,
-		ListOptions: toGitHubListOptions(opt.ListOptions),
+		ListOptions: toGitHubListOptions(&opt.ListOptions),
 	}
 }

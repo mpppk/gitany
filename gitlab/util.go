@@ -5,7 +5,11 @@ import (
 	"github.com/xanzy/go-gitlab"
 )
 
-func toGitLabListOptions(opt gitany.ListOptions) gitlab.ListOptions {
+func toGitLabListOptions(opt *gitany.ListOptions) gitlab.ListOptions {
+	if opt == nil {
+		return gitlab.ListOptions{}
+	}
+
 	return gitlab.ListOptions{
 		Page:    opt.Page,
 		PerPage: opt.PerPage,
@@ -13,29 +17,30 @@ func toGitLabListOptions(opt gitany.ListOptions) gitlab.ListOptions {
 }
 
 func toGitLabListGroupProjectsOptions(opt *gitany.RepositoryListByOrgOptions) *gitlab.ListGroupProjectsOptions {
+	if opt == nil {
+		return nil
+	}
+
 	return &gitlab.ListGroupProjectsOptions{
 		// FIXME support Type field
-		ListOptions: toGitLabListOptions(opt.ListOptions),
+		ListOptions: toGitLabListOptions(&opt.ListOptions),
 	}
 }
 
 func toGitLabListGroupIssuesOptions(opt *gitany.IssueListOptions) *gitlab.ListGroupIssuesOptions {
-	// FIXME
+	if opt == nil {
+		return nil
+	}
+
+	state := opt.State
+	if opt.State == "open" {
+		state = "opened"
+	}
+
+	// FIXME Add more options
 	return &gitlab.ListGroupIssuesOptions{
-		State:  gitlab.String(opt.State),
-		Labels: gitlab.Labels(opt.Labels),
-		//IIDs:            opt.IIDs,
-		//Milestone:       opt.Milestone,
-		//Scope:           opt.Scope,
-		//AuthorID:        opt.AuthorID,
-		//AssigneeID:      opt.AssigneeID,
-		//MyReactionEmoji: opt.MyReactionEmoji,
-		//OrderBy:         opt.OrderBy,
-		Sort: gitlab.String(opt.Sort),
-		//Search: opt.Search,
-		//CreatedAfter:    opt.CreatedAfter,
-		//CreatedBefore:   opt.CreatedBefore,
-		//UpdatedAfter:    opt.UpdatedAfter,
-		//UpdatedBefore:   opt.UpdatedBefore,
+		State:       gitlab.String(state),
+		Labels:      gitlab.Labels(opt.Labels),
+		ListOptions: toGitLabListOptions(&opt.ListOptions),
 	}
 }
