@@ -20,6 +20,14 @@ func (i *Issue) GetRepository() gitany.Repository {
 	return gitany.Repository(repo)
 }
 
+func (i *Issue) GetMilestone() gitany.Milestone {
+	if i.Milestone == nil {
+		return nil
+	}
+
+	return &Milestone{Milestone: i.Milestone}
+}
+
 func (i *Issue) GetRepositoryID() int64 {
 	repo := i.Issue.GetRepository()
 	return *repo.ID

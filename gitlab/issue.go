@@ -28,6 +28,14 @@ func (issue *Issue) GetNumber() int {
 	return issue.IID
 }
 
+func (issue *Issue) GetMilestone() gitany.Milestone {
+	if issue.Milestone == nil {
+		return nil
+	}
+
+	return &Milestone{Milestone: issue.Milestone}
+}
+
 func (issue *Issue) GetRepository() gitany.Repository {
 	return &Repository{Project: issue.project}
 }

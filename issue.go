@@ -8,6 +8,7 @@ type Issue interface {
 	GetHTMLURL() string
 	GetID() int64
 	GetNumber() int
+	GetMilestone() Milestone
 	GetRepositoryID() int64
 	//GetRepository() Repository
 	GetTitle() string
