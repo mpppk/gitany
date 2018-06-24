@@ -1,6 +1,8 @@
 package gitlab
 
 import (
+	"time"
+
 	"github.com/mpppk/gitany"
 	"github.com/xanzy/go-gitlab"
 )
@@ -12,6 +14,10 @@ type Issue struct {
 
 func (issue *Issue) GetBody() string {
 	return issue.Description
+}
+
+func (issue *Issue) GetDueDate() *time.Time {
+	return (*time.Time)(issue.DueDate)
 }
 
 func (issue *Issue) GetID() int64 {

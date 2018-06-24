@@ -1,12 +1,18 @@
 package github
 
 import (
+	"time"
+
 	"github.com/google/go-github/github"
 	"github.com/mpppk/gitany"
 )
 
 type Issue struct {
 	*github.Issue
+}
+
+func (i *Issue) GetDueDate() *time.Time {
+	return nil
 }
 
 func (i *Issue) GetRepository() gitany.Repository {
