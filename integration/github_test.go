@@ -40,7 +40,7 @@ func TestGitHubIntegration(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	_, err = client.GetIssues().ListByRepo(ctx, "mpppk-test", "test-repo")
+	_, _, err = client.GetIssues().ListByRepo(ctx, "mpppk-test", "test-repo", nil)
 	if err != nil {
 		t.Fatal(err)
 	}

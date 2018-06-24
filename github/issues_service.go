@@ -29,19 +29,19 @@ func (i *issuesService) GetURL(owner, repo string, id int) (string, error) {
 	return fmt.Sprintf("%s/%d", url, id), errors.Wrap(err, "Error occurred in github.Client.GetIssueURL")
 }
 
-func (i *issuesService) ListByRepo(ctx context.Context, owner, repo string) (serviceIssues []gitany.Issue, err error) {
-	opt := &github.IssueListByRepoOptions{ListOptions: *i.ListOptions}
-	issues, err := i.getGitHubIssues(ctx, owner, repo, opt)
+func (i *issuesService) ListByRepo(ctx context.Context, owner, repo string, opt *gitany.IssueListByRepoOptions) (serviceIssues []gitany.Issue, res gitany.Response, err error) {
+	githubOpt := toGitHubIssueListByRepoOptions(opt)
+	issues, response, err := i.getGitHubIssues(ctx, owner, repo, githubOpt)
 
 	if err != nil {
-		return nil, errors.Wrap(err, "Failed to get Issues by rawClient client in github.Client.GetIssues")
+		return nil, &Response{Response: response}, errors.Wrap(err, "Failed to get Issues by rawClient client in github.Client.GetIssues")
 	}
 
 	for _, issue := range issues {
 		serviceIssues = append(serviceIssues, &Issue{Issue: issue})
 	}
 
-	return serviceIssues, errors.Wrap(err, "Error occurred in github.Client.GetIssues")
+	return serviceIssues, &Response{Response: response}, errors.Wrap(err, "Error occurred in github.Client.GetIssues")
 }
 
 func (i *issuesService) ListByOrg(ctx context.Context, org string, opt *gitany.IssueListOptions) ([]gitany.Issue, gitany.Response, error) {
@@ -60,11 +60,11 @@ func (i *issuesService) ListByOrg(ctx context.Context, org string, opt *gitany.I
 
 }
 
-func (i *issuesService) getGitHubIssues(ctx context.Context, owner, repo string, opt *github.IssueListByRepoOptions) (issues []*github.Issue, err error) {
-	issuesAndPRs, _, err := i.rawClient.GetIssues().ListByRepo(ctx, owner, repo, opt)
+func (i *issuesService) getGitHubIssues(ctx context.Context, owner, repo string, opt *github.IssueListByRepoOptions) (issues []*github.Issue, res *github.Response, err error) {
+	issuesAndPRs, response, err := i.rawClient.GetIssues().ListByRepo(ctx, owner, repo, opt)
 
 	if err != nil {
-		return nil, errors.Wrap(err, "Error occurred in github.Client.getGitHubIssues")
+		return nil, response, errors.Wrap(err, "Error occurred in github.Client.getGitHubIssues")
 	}
 
 	for _, issueOrPR := range issuesAndPRs {
@@ -72,7 +72,7 @@ func (i *issuesService) getGitHubIssues(ctx context.Context, owner, repo string,
 			issues = append(issues, issueOrPR)
 		}
 	}
-	return issues, nil
+	return issues, response, nil
 }
 
 func (i *issuesService) ListLabels(ctx context.Context, owner string, repo string, opt *gitany.ListOptions) (labels []gitany.Label, res gitany.Response, err error) {

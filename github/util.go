@@ -27,6 +27,18 @@ func toGitHubRepositoryListByOrgOptions(opt *gitany.RepositoryListByOrgOptions) 
 	}
 }
 
+func toGitHubIssueListByRepoOptions(opt *gitany.IssueListByRepoOptions) *github.IssueListByRepoOptions {
+	if opt == nil {
+		return nil
+	}
+
+	return &github.IssueListByRepoOptions{
+		State:       opt.State,
+		Labels:      opt.Labels,
+		ListOptions: toGitHubListOptions(&opt.ListOptions),
+	}
+}
+
 func toGitHubIssueListOptions(opt *gitany.IssueListOptions) *github.IssueListOptions {
 	if opt == nil {
 		return nil

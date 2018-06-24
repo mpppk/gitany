@@ -15,15 +15,15 @@ type issuesService struct {
 	ListOptions *gitlab.ListOptions
 }
 
-func (i *issuesService) ListByRepo(ctx context.Context, owner, repo string) (serviceIssues []gitany.Issue, err error) {
-	opt := &gitlab.ListProjectIssuesOptions{ListOptions: *i.ListOptions}
-	issues, _, err := i.rawClient.GetIssues().ListProjectIssues(owner+"/"+repo, opt)
+func (i *issuesService) ListByRepo(ctx context.Context, owner, repo string, opt *gitany.IssueListByRepoOptions) (serviceIssues []gitany.Issue, res gitany.Response, err error) {
+	gitlabOpt := toGitLabListProjectIssuesOptions(opt)
+	issues, response, err := i.rawClient.GetIssues().ListProjectIssues(owner+"/"+repo, gitlabOpt)
 
 	for _, issue := range issues {
 		serviceIssues = append(serviceIssues, &Issue{Issue: issue})
 	}
 
-	return serviceIssues, errors.Wrap(err, "Failed to get Issues by raw client in gitlab.Client.GetIssues")
+	return serviceIssues, &Response{Response: response}, errors.Wrap(err, "Failed to get Issues by raw client in gitlab.Client.GetIssues")
 }
 
 func (i *issuesService) ListByOrg(ctx context.Context, org string, opt *gitany.IssueListOptions) ([]gitany.Issue, gitany.Response, error) {

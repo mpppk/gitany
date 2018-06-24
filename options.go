@@ -12,6 +12,16 @@ type ListOptions struct {
 	PerPage int
 }
 
+type IssueListByRepoOptions struct {
+	// State filters issues based on their state. Possible values are: open,
+	// closed, all. Default is "open".
+	State string `url:"state,omitempty"`
+
+	// Labels filters issues based on their label.
+	Labels []string `url:"labels,omitempty,comma"`
+	ListOptions
+}
+
 type IssueListOptions struct {
 	// State filters issues based on their state. Possible values are: open,
 	// closed, all. Default is "open".
