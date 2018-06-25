@@ -54,4 +54,9 @@ func TestGitLabIntegration(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+
+	_, _, err = client.GetIssues().ListMilestonesByOrg(ctx, "gitany-test", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
 }

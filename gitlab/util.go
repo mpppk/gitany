@@ -62,3 +62,18 @@ func toGitLabListGroupIssuesOptions(opt *gitany.IssueListOptions) *gitlab.ListGr
 		ListOptions: toGitLabListOptions(&opt.ListOptions),
 	}
 }
+
+func toGitLabListGroupMilestonesOptions(opt *gitany.MilestoneListOptions) *gitlab.ListGroupMilestonesOptions {
+	if opt == nil {
+		return nil
+	}
+
+	state := opt.State
+	if opt.State == "open" {
+		state = "opened"
+	}
+
+	return &gitlab.ListGroupMilestonesOptions{
+		State: state, // FIXME
+	}
+}

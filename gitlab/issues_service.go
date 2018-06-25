@@ -41,6 +41,20 @@ func (i *issuesService) ListByOrg(ctx context.Context, org string, opt *gitany.I
 	return issues, &Response{Response: res}, nil
 }
 
+func (i *issuesService) ListMilestonesByOrg(ctx context.Context, org string, opt *gitany.MilestoneListOptions) (milestones []gitany.Milestone, res gitany.Response, err error) {
+	gitlabOpt := toGitLabListGroupMilestonesOptions(opt)
+	rawMilestones, response, err := i.rawClient.GetGroupMilestones().ListGroupMilestones(org, gitlabOpt)
+	if err != nil {
+		return nil, &Response{Response: response}, errors.Wrap(err, "failed to fetch gitlab group milestone")
+	}
+
+	for _, rawMilestone := range rawMilestones {
+		milestones = append(milestones, &GroupMilestone{GroupMilestone: rawMilestone})
+	}
+
+	return milestones, &Response{Response: response}, nil
+}
+
 func (i *issuesService) ListLabels(ctx context.Context, owner string, repo string, opt *gitany.ListOptions) (labels []gitany.Label, res gitany.Response, err error) {
 	gitlabOpt := gitlab.ListLabelsOptions(toGitLabListOptions(opt))
 

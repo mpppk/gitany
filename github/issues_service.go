@@ -60,6 +60,10 @@ func (i *issuesService) ListByOrg(ctx context.Context, org string, opt *gitany.I
 
 }
 
+func (i *issuesService) ListMilestonesByOrg(ctx context.Context, org string, opt *gitany.MilestoneListOptions) ([]gitany.Milestone, gitany.Response, error) {
+	return nil, nil, errors.New("ListMilestonesByOrg does not implemented in github plugin")
+}
+
 func (i *issuesService) getGitHubIssues(ctx context.Context, owner, repo string, opt *github.IssueListByRepoOptions) (issues []*github.Issue, res *github.Response, err error) {
 	issuesAndPRs, response, err := i.rawClient.GetIssues().ListByRepo(ctx, owner, repo, opt)
 
@@ -84,7 +88,7 @@ func (i *issuesService) ListLabels(ctx context.Context, owner string, repo strin
 	}
 
 	for _, githubLabel := range githubLabels {
-		labels = append(labels, githubLabel)
+		labels = append(labels, &Label{Label: githubLabel})
 	}
 
 	return labels, &Response{Response: response}, nil

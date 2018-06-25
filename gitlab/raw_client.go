@@ -5,6 +5,7 @@ import "github.com/xanzy/go-gitlab"
 type RawClient interface {
 	GetProjects() ProjectsService
 	GetGroups() GroupsService
+	GetGroupMilestones() GroupMilestonesService
 	GetMergeRequests() MergeRequestsService
 	GetIssues() IssuesService
 	GetLabels() LabelsService
@@ -36,6 +37,10 @@ type MergeRequestsService interface {
 	CreateMergeRequest(pid interface{}, opt *gitlab.CreateMergeRequestOptions, options ...gitlab.OptionFunc) (*gitlab.MergeRequest, *gitlab.Response, error)
 }
 
+type GroupMilestonesService interface {
+	ListGroupMilestones(gid interface{}, opt *gitlab.ListGroupMilestonesOptions, options ...gitlab.OptionFunc) ([]*gitlab.GroupMilestone, *gitlab.Response, error)
+}
+
 //type tagsService interface {
 //	CreateTag(pid interface{}, opt *gitlab.CreateTagOptions, options ...gitlab.OptionFunc) (*gitlab.Tag, *gitlab.Response, error)
 //}
@@ -50,6 +55,10 @@ func (r *rawClient) GetProjects() ProjectsService {
 
 func (r *rawClient) GetGroups() GroupsService {
 	return r.Groups
+}
+
+func (r *rawClient) GetGroupMilestones() GroupMilestonesService {
+	return r.GroupMilestones
 }
 
 func (r *rawClient) GetIssues() IssuesService {

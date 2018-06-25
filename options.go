@@ -22,6 +22,13 @@ type IssueListByRepoOptions struct {
 	ListOptions
 }
 
+type MilestoneListOptions struct {
+	// State filters milestones based on their state. Possible values are:
+	// open, closed, all. Default is "open".
+	State string `url:"state,omitempty"`
+	ListOptions
+}
+
 type IssueListOptions struct {
 	// State filters issues based on their state. Possible values are: open,
 	// closed, all. Default is "open".

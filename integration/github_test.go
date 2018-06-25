@@ -54,4 +54,7 @@ func TestGitHubIntegration(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+
+	// ListMilestonesByOrg always return err because group milestone does not implemented in github
+	_, _, err = client.GetIssues().ListMilestonesByOrg(ctx, "gitany-test-org", nil)
 }
