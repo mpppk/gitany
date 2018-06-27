@@ -3,7 +3,6 @@ package gitany
 import (
 	"context"
 	"errors"
-	"fmt"
 
 	"github.com/mpppk/gitany/etc"
 )
@@ -16,7 +15,6 @@ func RegisterClientGenerator(clientGenerator ClientGenerator) {
 
 func GetClient(ctx context.Context, serviceConfig *etc.ServiceConfig) (Client, error) {
 	for _, clientGenerator := range clientGenerators {
-		fmt.Printf("%#v\n", clientGenerator)
 		if clientGenerator.GetType() == serviceConfig.Type {
 			return clientGenerator.New(ctx, serviceConfig)
 		}

@@ -55,7 +55,7 @@ func (m *GroupMilestone) GetStartDate() *time.Time {
 }
 
 func (m *GroupMilestone) GetDueDate() *time.Time {
-	return (*time.Time)(m.StartDate)
+	return (*time.Time)(m.DueDate)
 }
 
 func (m *GroupMilestone) GetState() string {

@@ -74,6 +74,7 @@ func toGitLabListGroupMilestonesOptions(opt *gitany.MilestoneListOptions) *gitla
 	}
 
 	return &gitlab.ListGroupMilestonesOptions{
-		State: state, // FIXME
+		State:       state, // FIXME
+		ListOptions: toGitLabListOptions(&opt.ListOptions),
 	}
 }
