@@ -25,6 +25,8 @@ type RepositoriesService interface {
 
 type IssuesService interface {
 	ListByRepo(ctx context.Context, owner, repo string, opt *github.IssueListByRepoOptions) ([]*github.Issue, *github.Response, error)
+	ListByOrg(ctx context.Context, org string, opt *github.IssueListOptions) ([]*github.Issue, *github.Response, error)
+	ListLabels(ctx context.Context, owner string, repo string, opt *github.ListOptions) ([]*github.Label, *github.Response, error)
 }
 
 type PullRequestsService interface {
@@ -46,7 +48,7 @@ func (r *rawClient) GetRepositories() RepositoriesService {
 }
 
 func (r *rawClient) GetIssues() IssuesService {
-	return IssuesService(r.Issues)
+	return r.Issues
 }
 
 func (r *rawClient) GetPullRequests() PullRequestsService {

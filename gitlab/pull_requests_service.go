@@ -4,18 +4,18 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/mpppk/gitany/service"
+	"github.com/mpppk/gitany"
 	"github.com/pkg/errors"
 	"github.com/xanzy/go-gitlab"
 )
 
 type pullRequestsService struct {
-	repositoriesService service.RepositoriesService
+	repositoriesService gitany.RepositoriesService
 	raw                 MergeRequestsService
 	ListOptions         *gitlab.ListOptions
 }
 
-func (p *pullRequestsService) List(ctx context.Context, owner, repo string) (servicePullRequests []service.PullRequest, err error) {
+func (p *pullRequestsService) List(ctx context.Context, owner, repo string) (servicePullRequests []gitany.PullRequest, err error) {
 	opt := &gitlab.ListProjectMergeRequestsOptions{ListOptions: *p.ListOptions}
 	mergeRequests, _, err := p.raw.ListProjectMergeRequests(owner+"/"+repo, opt)
 
@@ -36,7 +36,7 @@ func (p *pullRequestsService) GetURL(owner, repo string, id int) (string, error)
 	return fmt.Sprintf("%s/%d", url, id), errors.Wrap(err, "Error occurred in gitlab.Client.GetPUllRequestURL")
 }
 
-func (p *pullRequestsService) Create(ctx context.Context, repo string, newPR *service.NewPullRequest) (service.PullRequest, error) {
+func (p *pullRequestsService) Create(ctx context.Context, repo string, newPR *gitany.NewPullRequest) (gitany.PullRequest, error) {
 	opt := &gitlab.CreateMergeRequestOptions{
 		Title:        &newPR.Title,
 		Description:  &newPR.Body,

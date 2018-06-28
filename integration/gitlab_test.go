@@ -35,7 +35,27 @@ func TestGitLabIntegration(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	_, err = client.GetIssues().ListByRepo(ctx, "mpppk-test", "test-repo")
+	_, _, err = client.GetRepositories().ListByOrg(ctx, "gitany-test", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	_, _, err = client.GetIssues().ListByRepo(ctx, "mpppk-test", "test-repo", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	_, _, err = client.GetIssues().ListByOrg(ctx, "gitany-test", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	_, _, err = client.GetIssues().ListLabels(ctx, "mpppk-test", "test-repo", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	_, _, err = client.GetIssues().ListMilestonesByOrg(ctx, "gitany-test", nil)
 	if err != nil {
 		t.Fatal(err)
 	}

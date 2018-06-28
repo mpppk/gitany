@@ -3,12 +3,12 @@ package github
 import (
 	"fmt"
 
-	"github.com/mpppk/gitany/service"
+	"github.com/mpppk/gitany"
 	"github.com/pkg/errors"
 )
 
 type projectsService struct {
-	repositoriesService service.RepositoriesService
+	repositoriesService gitany.RepositoriesService
 }
 
 func (p *projectsService) GetProjectsURL(owner, repo string) (string, error) {

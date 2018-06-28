@@ -7,8 +7,8 @@ import (
 	"strings"
 
 	"github.com/google/go-github/github"
+	"github.com/mpppk/gitany"
 	"github.com/mpppk/gitany/etc"
-	"github.com/mpppk/gitany/service"
 	"github.com/pkg/errors"
 	"golang.org/x/oauth2"
 )
@@ -25,50 +25,50 @@ type Client struct {
 	ListOptions *github.ListOptions
 }
 
-func (c *Client) GetRepositories() service.RepositoriesService {
-	return service.RepositoriesService(&repositoriesService{
-		raw: c.rawClient.GetRepositories(),
+func (c *Client) GetRepositories() gitany.RepositoriesService {
+	return &repositoriesService{
+		raw:  c.rawClient.GetRepositories(),
 		host: c.host,
-	})
+	}
 }
 
-func (c *Client) GetIssues() service.IssuesService {
-	return service.IssuesService(&issuesService{
-		raw: c.rawClient.GetIssues(),
-		repositoriesService: c.GetRepositories(),
+func (c *Client) GetIssues() gitany.IssuesService {
+	return &issuesService{
+		client:      c,
+		rawClient:   c.rawClient,
 		ListOptions: c.ListOptions,
-	})
+	}
 }
 
-func (c *Client) GetPullRequests() service.PullRequestsService {
-	return service.PullRequestsService(&pullRequestsService{
-		raw: c.rawClient.GetPullRequests(),
+func (c *Client) GetPullRequests() gitany.PullRequestsService {
+	return &pullRequestsService{
+		raw:                 c.rawClient.GetPullRequests(),
 		repositoriesService: c.GetRepositories(),
-		ListOptions: c.ListOptions,
-	})
+		ListOptions:         c.ListOptions,
+	}
 }
 
-func (c *Client) GetProjects() service.ProjectsService {
-	return service.ProjectsService(&projectsService{
+func (c *Client) GetProjects() gitany.ProjectsService {
+	return &projectsService{
 		repositoriesService: c.GetRepositories(),
-	})
+	}
 }
 
-func (c *Client) GetAuthorizations() service.AuthorizationsService {
-	return service.AuthorizationsService(&authorizationsService{
+func (c *Client) GetAuthorizations() gitany.AuthorizationsService {
+	return &authorizationsService{
 		raw: c.rawClient.GetAuthorizations(),
-	})
+	}
 }
 
-type ClientGenerator struct {}
+type ClientGenerator struct{}
 
-func (cb *ClientGenerator) New(ctx context.Context, serviceConfig *etc.ServiceConfig) (service.Client, error) {
+func (cb *ClientGenerator) New(ctx context.Context, serviceConfig *etc.ServiceConfig) (gitany.Client, error) {
 	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: serviceConfig.Token})
 	tc := oauth2.NewClient(ctx, ts)
 	return newServiceFromClient(serviceConfig, &rawClient{Client: github.NewClient(tc)})
 }
 
-func (cb *ClientGenerator) NewViaBasicAuth(ctx context.Context, serviceConfig *etc.ServiceConfig, user, pass string) (service.Client, error) {
+func (cb *ClientGenerator) NewViaBasicAuth(ctx context.Context, serviceConfig *etc.ServiceConfig, user, pass string) (gitany.Client, error) {
 	tp := github.BasicAuthTransport{
 		Username: strings.TrimSpace(user),
 		Password: strings.TrimSpace(pass),
@@ -80,7 +80,7 @@ func (cb *ClientGenerator) GetType() string {
 	return "github"
 }
 
-func newServiceFromClient(serviceConfig *etc.ServiceConfig, client RawClient) (service.Client, error) {
+func newServiceFromClient(serviceConfig *etc.ServiceConfig, client RawClient) (gitany.Client, error) {
 	urlStr := serviceConfig.Protocol + "://api." + serviceConfig.Host
 	if !strings.HasSuffix(urlStr, "/") {
 		urlStr += "/"
@@ -92,7 +92,7 @@ func newServiceFromClient(serviceConfig *etc.ServiceConfig, client RawClient) (s
 	}
 	client.SetBaseURL(baseUrl)
 	listOpt := &github.ListOptions{PerPage: 100}
-	return service.Client(&Client{rawClient: client, host: serviceConfig.Host, ListOptions: listOpt}), nil
+	return gitany.Client(&Client{rawClient: client, host: serviceConfig.Host, ListOptions: listOpt}), nil
 }
 
 func hasAuthNote(auths []*github.Authorization, note string) bool {

@@ -5,12 +5,12 @@ import (
 	"fmt"
 
 	"github.com/google/go-github/github"
-	"github.com/mpppk/gitany/service"
+	"github.com/mpppk/gitany"
 	"github.com/pkg/errors"
 )
 
 type pullRequestsService struct {
-	repositoriesService service.RepositoriesService
+	repositoriesService gitany.RepositoriesService
 	raw                 PullRequestsService
 	ListOptions         *github.ListOptions
 }
@@ -25,7 +25,7 @@ func (p *pullRequestsService) GetURL(owner, repo string, id int) (string, error)
 	return fmt.Sprintf("%s/pull/%d", repoUrl, id), errors.Wrap(err, "Error occurred in github.Client.GetPullRequestURL")
 }
 
-func (p *pullRequestsService) Create(ctx context.Context, repo string, newPR *service.NewPullRequest) (service.PullRequest, error) {
+func (p *pullRequestsService) Create(ctx context.Context, repo string, newPR *gitany.NewPullRequest) (gitany.PullRequest, error) {
 	head := fmt.Sprintf("%s:%s", newPR.HeadOwner, newPR.HeadBranch)
 
 	fmt.Println("github body:", newPR.Body)
@@ -55,7 +55,7 @@ func (p *pullRequestsService) Create(ctx context.Context, repo string, newPR *se
 	return createdPullRequest, errors.Wrap(err, "Error occurred in github.CreatePullRequest")
 }
 
-func (p *pullRequestsService) List(ctx context.Context, owner, repo string) (servicePullRequests []service.PullRequest, err error) {
+func (p *pullRequestsService) List(ctx context.Context, owner, repo string) (servicePullRequests []gitany.PullRequest, err error) {
 	opt := github.PullRequestListOptions{ListOptions: *p.ListOptions}
 	pullRequests, _, err := p.raw.List(ctx, owner, repo, &opt)
 

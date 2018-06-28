@@ -1,12 +1,12 @@
 package gitlab
 
 import (
-	"github.com/mpppk/gitany/service"
+	"github.com/mpppk/gitany"
 	"github.com/pkg/errors"
 )
 
 type projetsService struct {
-	repositoriesService service.RepositoriesService
+	repositoriesService gitany.RepositoriesService
 }
 
 func (p *projetsService) GetProjectsURL(owner, repo string) (string, error) {
@@ -18,6 +18,3 @@ func (p *projetsService) GetURL(owner, repo string, id int) (string, error) {
 	// TODO: Support multi issue boards
 	return p.GetProjectsURL(owner, repo)
 }
-
-
-

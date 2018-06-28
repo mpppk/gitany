@@ -5,8 +5,10 @@ import "github.com/xanzy/go-gitlab"
 type RawClient interface {
 	GetProjects() ProjectsService
 	GetGroups() GroupsService
+	GetGroupMilestones() GroupMilestonesService
 	GetMergeRequests() MergeRequestsService
 	GetIssues() IssuesService
+	GetLabels() LabelsService
 	//GetTags() tagsService
 	SetBaseURL(baseUrl string) error
 }
@@ -17,16 +19,26 @@ type ProjectsService interface {
 }
 
 type GroupsService interface {
+	GetGroup(gid interface{}, options ...gitlab.OptionFunc) (*gitlab.Group, *gitlab.Response, error)
 	ListGroupProjects(gid interface{}, opt *gitlab.ListGroupProjectsOptions, options ...gitlab.OptionFunc) ([]*gitlab.Project, *gitlab.Response, error)
 }
 
 type IssuesService interface {
 	ListProjectIssues(pid interface{}, opt *gitlab.ListProjectIssuesOptions, options ...gitlab.OptionFunc) ([]*gitlab.Issue, *gitlab.Response, error)
+	ListGroupIssues(pid interface{}, opt *gitlab.ListGroupIssuesOptions, options ...gitlab.OptionFunc) ([]*gitlab.Issue, *gitlab.Response, error)
+}
+
+type LabelsService interface {
+	ListLabels(pid interface{}, opt *gitlab.ListLabelsOptions, options ...gitlab.OptionFunc) ([]*gitlab.Label, *gitlab.Response, error)
 }
 
 type MergeRequestsService interface {
 	ListProjectMergeRequests(pid interface{}, opt *gitlab.ListProjectMergeRequestsOptions, options ...gitlab.OptionFunc) ([]*gitlab.MergeRequest, *gitlab.Response, error)
 	CreateMergeRequest(pid interface{}, opt *gitlab.CreateMergeRequestOptions, options ...gitlab.OptionFunc) (*gitlab.MergeRequest, *gitlab.Response, error)
+}
+
+type GroupMilestonesService interface {
+	ListGroupMilestones(gid interface{}, opt *gitlab.ListGroupMilestonesOptions, options ...gitlab.OptionFunc) ([]*gitlab.GroupMilestone, *gitlab.Response, error)
 }
 
 //type tagsService interface {
@@ -38,19 +50,27 @@ type rawClient struct {
 }
 
 func (r *rawClient) GetProjects() ProjectsService {
-	return ProjectsService(r.Projects)
+	return r.Projects
 }
 
 func (r *rawClient) GetGroups() GroupsService {
-	return GroupsService(r.Groups)
+	return r.Groups
+}
+
+func (r *rawClient) GetGroupMilestones() GroupMilestonesService {
+	return r.GroupMilestones
 }
 
 func (r *rawClient) GetIssues() IssuesService {
-	return IssuesService(r.Issues)
+	return r.Issues
+}
+
+func (r *rawClient) GetLabels() LabelsService {
+	return r.Labels
 }
 
 func (r *rawClient) GetMergeRequests() MergeRequestsService {
-	return MergeRequestsService(r.MergeRequests)
+	return r.MergeRequests
 }
 
 //func (r *rawClient) GetTags() tagsService {

@@ -1,4 +1,4 @@
-package service
+package gitany
 
 import (
 	"context"
@@ -16,19 +16,22 @@ type NewPullRequest struct {
 }
 
 type RepositoriesService interface {
-	Get(ctx context.Context, owner, repo string) (Repository, error)
+	Get(ctx context.Context, owner, repo string) (Repository, Response, error)
 	GetURL(owner, repo string) (string, error)
 	GetWikisURL(owner, repo string) (string, error)
 	GetMilestonesURL(owner, repo string) (string, error)
 	GetMilestoneURL(owner, repo string, no int) (string, error)
 	GetCommitsURL(owner, repo string) (string, error)
-	Create(ctx context.Context, repo string) (Repository, error)
-	CreateRelease(ctx context.Context, owner, repo string, newRelease *NewRelease) (Release, error)
-	ListByOrg(ctx context.Context, org string) ([]Repository, error)
+	Create(ctx context.Context, org string, repo Repository) (Repository, Response, error)
+	CreateRelease(ctx context.Context, owner, repo string, newRelease *NewRelease) (Release, Response, error)
+	ListByOrg(ctx context.Context, org string, opt *RepositoryListByOrgOptions) ([]Repository, Response, error)
 }
 
 type IssuesService interface {
-	ListByRepo(ctx context.Context, owner, repo string) ([]Issue, error)
+	ListByRepo(ctx context.Context, owner, repo string, opt *IssueListByRepoOptions) ([]Issue, Response, error)
+	ListByOrg(ctx context.Context, org string, opt *IssueListOptions) ([]Issue, Response, error)
+	ListMilestonesByOrg(ctx context.Context, org string, opt *MilestoneListOptions) ([]Milestone, Response, error)
+	ListLabels(ctx context.Context, owner string, repo string, opt *ListOptions) ([]Label, Response, error)
 	GetIssuesURL(owner, repo string) (string, error)
 	GetURL(owner, repo string, no int) (string, error)
 }
