@@ -28,8 +28,6 @@ func TestGitLabIntegration(t *testing.T) {
 
 	ctx := context.Background()
 
-	t.Log(serviceConfig)
-
 	client, err := gitany.GetClient(context.Background(), serviceConfig)
 	if err != nil {
 		t.Fatal(err)
