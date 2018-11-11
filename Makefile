@@ -15,10 +15,10 @@ lint: deps
 .PHONY: test
 test: deps
 	go test ./...
-	go test -v -tags=integration -run=^./integration
+	go test -v -tags=integration -run=^$$ ./integration
 
 .PHONY: integration-test
-test: deps
+integration-test: deps
 	go test -tags=integration ./...
 
 .PHONY: coverage
