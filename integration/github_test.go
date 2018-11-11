@@ -1,7 +1,6 @@
 package integration
 
 import (
-	"fmt"
 	"os"
 
 	"testing"
@@ -46,14 +45,16 @@ func TestGitHubIntegration(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	issues, _, err := client.GetIssues().ListByOrg(ctx, org, nil)
+	opt := &gitany.IssueListOptions{
+		Filter: "all", // see https://developer.github.com/v3/issues/#list-issues
+	}
+	issues, res, err := client.GetIssues().ListByOrg(ctx, org, opt)
 	if err != nil {
-		t.Fatal(err)
+		t.Fatal(err, res.GetHTTPResponse())
 	}
 
 	if len(issues) <= 0 {
-		fmt.Println("failed to fetch issues from " + org)
-		//t.Fatal("failed to fetch issues from " + org)
+		t.Fatal("failed to fetch issues from "+org, res.GetHTTPResponse())
 	}
 
 	_, _, err = client.GetIssues().ListLabels(ctx, "mpppk-test", "test-repo", nil)
