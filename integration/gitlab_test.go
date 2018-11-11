@@ -28,33 +28,57 @@ func TestGitLabIntegration(t *testing.T) {
 
 	ctx := context.Background()
 
+	org := "gitany-test"
+	owner := "mpppk-test"
+	repoName := "test-repo"
+
 	client, err := gitany.GetClient(context.Background(), serviceConfig)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	_, _, err = client.GetRepositories().ListByOrg(ctx, "gitany-test", nil)
+	orgRepos, res, err := client.GetRepositories().ListByOrg(ctx, org, nil)
 	if err != nil {
-		t.Fatal(err)
+		t.Fatal(err, res)
 	}
 
-	_, _, err = client.GetIssues().ListByRepo(ctx, "mpppk-test", "test-repo", nil)
-	if err != nil {
-		t.Fatal(err)
+	if len(orgRepos) <= 0 {
+		t.Errorf("failed to fetch org repos from %s", org)
 	}
 
-	_, _, err = client.GetIssues().ListByOrg(ctx, "gitany-test", nil)
+	repoIssues, res, err := client.GetIssues().ListByRepo(ctx, owner, repoName, nil)
 	if err != nil {
-		t.Fatal(err)
+		t.Fatal(err, res)
 	}
 
-	_, _, err = client.GetIssues().ListLabels(ctx, "mpppk-test", "test-repo", nil)
-	if err != nil {
-		t.Fatal(err)
+	if len(repoIssues) <= 0 {
+		t.Errorf("failed to fetch repo issues from %s/%s", owner, repoName)
 	}
 
-	_, _, err = client.GetIssues().ListMilestonesByOrg(ctx, "gitany-test", nil)
+	orgIssues, res, err := client.GetIssues().ListByOrg(ctx, org, nil)
 	if err != nil {
-		t.Fatal(err)
+		t.Fatal(err, res)
+	}
+
+	if len(orgIssues) <= 0 {
+		t.Errorf("failed to fetch org issues from %s", org)
+	}
+
+	repoLabels, res, err := client.GetIssues().ListLabels(ctx, owner, repoName, nil)
+	if err != nil {
+		t.Fatal(err, res)
+	}
+
+	if len(repoLabels) <= 0 {
+		t.Errorf("failed to fetch repo labels from %s/%s", owner, repoName)
+	}
+
+	milestones, res, err := client.GetIssues().ListMilestonesByOrg(ctx, org, nil)
+	if err != nil {
+		t.Fatal(err, res)
+	}
+
+	if len(milestones) <= 0 {
+		t.Errorf("failed to fetch org milestones from %s", org)
 	}
 }
