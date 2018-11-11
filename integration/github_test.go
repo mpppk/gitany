@@ -26,6 +26,8 @@ func TestGitHubIntegration(t *testing.T) {
 		Protocol: "https",
 	}
 
+	owner := "mpppk-test"
+	repoName := "test-repo"
 	org := "gitany-test-org"
 
 	ctx := context.Background()
@@ -35,14 +37,22 @@ func TestGitHubIntegration(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	_, _, err = client.GetRepositories().ListByOrg(ctx, org, nil)
+	repos, res, err := client.GetRepositories().ListByOrg(ctx, org, nil)
 	if err != nil {
-		t.Fatal(err)
+		t.Fatal(err, res)
 	}
 
-	_, _, err = client.GetIssues().ListByRepo(ctx, "mpppk-test", "test-repo", nil)
+	if len(repos) <= 0 {
+		t.Error("failed to fetch repositories from " + org)
+	}
+
+	repoIssues, res, err := client.GetIssues().ListByRepo(ctx, owner, repoName, nil)
 	if err != nil {
-		t.Fatal(err)
+		t.Fatal(err, res)
+	}
+
+	if len(repoIssues) <= 0 {
+		t.Errorf("failed to fetch repositories from %s/%s", owner, repoName)
 	}
 
 	opt := &gitany.IssueListOptions{
@@ -54,14 +64,17 @@ func TestGitHubIntegration(t *testing.T) {
 	}
 
 	if len(issues) <= 0 {
-		t.Fatal("failed to fetch issues from "+org, res.GetHTTPResponse())
+		t.Error("failed to fetch issues from " + org)
 	}
 
-	_, _, err = client.GetIssues().ListLabels(ctx, "mpppk-test", "test-repo", nil)
+	labels, res, err := client.GetIssues().ListLabels(ctx, owner, repoName, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
 
+	if len(labels) <= 0 {
+		t.Errorf("failed to fetch labels from %s/%s", owner, repoName)
+	}
 	// ListMilestonesByOrg always return err because group milestone does not implemented in github
 	_, _, err = client.GetIssues().ListMilestonesByOrg(ctx, org, nil)
 }
