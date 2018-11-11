@@ -10,7 +10,7 @@ import (
 )
 
 type issuesService struct {
-	projectURL  string
+	client      gitany.Client
 	rawClient   RawClient
 	ListOptions *gitlab.ListOptions
 }
@@ -71,7 +71,9 @@ func (i *issuesService) ListLabels(ctx context.Context, owner string, repo strin
 }
 
 func (i *issuesService) GetIssuesURL(owner, repo string) (string, error) {
-	return i.projectURL + "/issues", nil
+	repoUrl, err := i.client.GetRepositories().GetURL(owner, repo)
+	return fmt.Sprintf("%s/issues", repoUrl),
+		errors.Wrap(err, "failed to get gitlab repository URL from "+owner+"/"+repo)
 }
 
 func (i *issuesService) GetURL(owner, repo string, id int) (string, error) {

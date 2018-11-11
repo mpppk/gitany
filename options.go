@@ -30,6 +30,7 @@ type MilestoneListOptions struct {
 }
 
 type IssueListOptions struct {
+	Filter string
 	// State filters issues based on their state. Possible values are: open,
 	// closed, all. Default is "open".
 	State string

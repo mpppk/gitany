@@ -3,6 +3,8 @@ package github
 import (
 	"context"
 
+	"github.com/mpppk/gitany"
+
 	"net/url"
 	"testing"
 
@@ -10,7 +12,6 @@ import (
 
 	"github.com/google/go-github/github"
 	"github.com/mpppk/gitany/etc"
-	"github.com/mpppk/gitany/service"
 )
 
 const (
@@ -38,6 +39,10 @@ func (m *MockRepositoriesService) CreateRelease(ctx context.Context, owner, repo
 	return &github.RepositoryRelease{}, nil, nil
 }
 
+func (m *MockRepositoriesService) ListByOrg(ctx context.Context, org string, opt *github.RepositoryListByOrgOptions) ([]*github.Repository, *github.Response, error) {
+	return []*github.Repository{}, nil, nil
+}
+
 type MockIssuesService struct{}
 
 func (m *MockIssuesService) ListByRepo(ctx context.Context, owner, repo string, opt *github.IssueListByRepoOptions) ([]*github.Issue, *github.Response, error) {
@@ -55,6 +60,14 @@ func (m *MockIssuesService) ListByRepo(ctx context.Context, owner, repo string, 
 			PullRequestLinks: &github.PullRequestLinks{},
 		},
 	}, nil, nil
+}
+
+func (m *MockIssuesService) ListByOrg(ctx context.Context, org string, opt *github.IssueListOptions) ([]*github.Issue, *github.Response, error) {
+	return []*github.Issue{}, nil, nil
+}
+
+func (m *MockIssuesService) ListLabels(ctx context.Context, owner string, repo string, opt *github.ListOptions) ([]*github.Label, *github.Response, error) {
+	return []*github.Label{}, nil, nil
 }
 
 type MockPullRequestsService struct{}
@@ -141,21 +154,21 @@ func newMockRawClient() *MockRawClient {
 }
 
 type Client_GetRepositoryURLTest struct {
-	serviceConfig                   *etc.ServiceConfig
-	rawClient                       RawClient
-	willBeError                     bool
-	user                            string
-	repo                            string
-	createRepo                      string
-	issueID                         int
-	pullRequestID                   int
-	expectedRepositoryURL           string
-	expectedIssuesURL               string
-	expectedIssueURL                string
-	expectedPullRequestsURL         string
-	expectedPullRequestURL          string
-	expectedCreatedPullRequestURL   string
-	expectedCreatedPullRequestTitle string
+	serviceConfig                     *etc.ServiceConfig
+	rawClient                         RawClient
+	willBeError                       bool
+	user                              string
+	repo                              string
+	createRepo                        string
+	issueID                           int
+	pullRequestID                     int
+	expectedRepositoryURL             string
+	expectedIssuesURL                 string
+	expectedIssueURL                  string
+	expectedPullRequestsURL           string
+	expectedPullRequestURL            string
+	expectedCreatedPullRequestURL     string
+	expectedCreatedPullRequestTitle   string
 	expectedCreatedPullRequestMessage string
 }
 
@@ -272,7 +285,7 @@ func TestClient_GetRepositoryURL(t *testing.T) {
 		util.assertString(pullRequestURL, test.expectedPullRequestURL, title)
 
 		title = "Create PullRequest"
-		newPR := &service.NewPullRequest{
+		newPR := &gitany.NewPullRequest{
 			BaseOwner:  test.user,
 			BaseBranch: DEFAULT_BASE_BRANCH,
 			HeadOwner:  test.user,

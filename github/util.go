@@ -45,6 +45,7 @@ func toGitHubIssueListOptions(opt *gitany.IssueListOptions) *github.IssueListOpt
 	}
 
 	return &github.IssueListOptions{
+		Filter:      opt.Filter,
 		State:       opt.State,
 		Labels:      opt.Labels,
 		ListOptions: toGitHubListOptions(&opt.ListOptions),
