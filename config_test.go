@@ -1,4 +1,4 @@
-package etc
+package gitany
 
 import (
 	"reflect"

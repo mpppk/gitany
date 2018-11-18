@@ -1,4 +1,4 @@
-package service
+package gitany
 
 import (
 	"bufio"
@@ -8,6 +8,12 @@ import (
 
 	"golang.org/x/crypto/ssh/terminal"
 )
+
+func PanicIfErrorExist(err error) {
+	if err != nil {
+		panic(err)
+	}
+}
 
 func PromptUserAndPassword(hostName string) (string, string) {
 	r := bufio.NewReader(os.Stdin)
