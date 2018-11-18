@@ -7,7 +7,6 @@ import (
 	"strings"
 
 	"github.com/mpppk/gitany"
-	"github.com/mpppk/gitany/etc"
 	"github.com/pkg/errors"
 	"github.com/xanzy/go-gitlab"
 )
@@ -15,7 +14,7 @@ import (
 type Client struct {
 	rawClient     RawClient
 	host          string
-	serviceConfig *etc.ServiceConfig
+	serviceConfig *gitany.ServiceConfig
 	ListOptions   *gitlab.ListOptions
 }
 
@@ -55,12 +54,12 @@ func (c *Client) GetProjects() gitany.ProjectsService {
 	}
 }
 
-func (cb *ClientGenerator) New(ctx context.Context, serviceConfig *etc.ServiceConfig) (gitany.Client, error) {
+func (cb *ClientGenerator) New(ctx context.Context, serviceConfig *gitany.ServiceConfig) (gitany.Client, error) {
 	rawClient := newGitLabRawClient(serviceConfig)
 	return newClientFromRawClient(serviceConfig, rawClient), nil
 }
 
-func (cb *ClientGenerator) NewViaBasicAuth(ctx context.Context, serviceConfig *etc.ServiceConfig, user, pass string) (gitany.Client, error) {
+func (cb *ClientGenerator) NewViaBasicAuth(ctx context.Context, serviceConfig *gitany.ServiceConfig, user, pass string) (gitany.Client, error) {
 	panic("gitlab.ClientGenerator.NewViaBasicAuth is not implemented yet")
 }
 
@@ -68,13 +67,13 @@ func (cb *ClientGenerator) GetType() string {
 	return "gitlab"
 }
 
-func newGitLabRawClient(serviceConfig *etc.ServiceConfig) *rawClient {
+func newGitLabRawClient(serviceConfig *gitany.ServiceConfig) *rawClient {
 	client := gitlab.NewClient(nil, serviceConfig.Token)
 	client.SetBaseURL(serviceConfig.Protocol + "://" + serviceConfig.Host)
 	return &rawClient{Client: client}
 }
 
-func newClientFromRawClient(serviceConfig *etc.ServiceConfig, rawClient RawClient) gitany.Client {
+func newClientFromRawClient(serviceConfig *gitany.ServiceConfig, rawClient RawClient) gitany.Client {
 	listOpt := &gitlab.ListOptions{PerPage: 100}
 	return &Client{rawClient: rawClient, serviceConfig: serviceConfig, host: serviceConfig.Host, ListOptions: listOpt}
 }

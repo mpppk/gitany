@@ -11,7 +11,6 @@ import (
 
 	"strings"
 
-	"github.com/mpppk/gitany/etc"
 	"github.com/pkg/errors"
 	"github.com/xanzy/go-gitlab"
 )
@@ -185,7 +184,7 @@ func newMockRawClient() *MockRawClient {
 }
 
 type Client_GetRepositoryURLTest struct {
-	serviceConfig                     *etc.ServiceConfig
+	serviceConfig                     *gitany.ServiceConfig
 	rawClient                         RawClient
 	willBeError                       bool
 	user                              string
@@ -232,7 +231,7 @@ func (u *Util) assertString(actual, expected string, msg string) bool {
 
 func TestClient_GetRepositoryURL(t *testing.T) {
 
-	serviceConfig := &etc.ServiceConfig{
+	serviceConfig := &gitany.ServiceConfig{
 		Host:     "gitlab.com",
 		Type:     "gitlab",
 		Token:    "testtoken",

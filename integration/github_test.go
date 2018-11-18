@@ -10,7 +10,6 @@ import (
 	"context"
 
 	"github.com/mpppk/gitany"
-	"github.com/mpppk/gitany/etc"
 	"github.com/mpppk/gitany/github"
 )
 
@@ -21,7 +20,7 @@ func TestGitHubIntegration(t *testing.T) {
 	}
 	gitany.RegisterClientGenerator(&github.ClientGenerator{})
 
-	serviceConfig := &etc.ServiceConfig{
+	serviceConfig := &gitany.ServiceConfig{
 		Host:     "github.com",
 		Type:     "github",
 		Token:    token,
