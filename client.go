@@ -2,8 +2,6 @@ package gitany
 
 import (
 	"context"
-
-	"github.com/mpppk/gitany/etc"
 )
 
 type NewPullRequest struct {
@@ -61,7 +59,7 @@ type Client interface {
 }
 
 type ClientGenerator interface {
-	New(ctx context.Context, serviceConfig *etc.ServiceConfig) (Client, error)
-	NewViaBasicAuth(ctx context.Context, serviceConfig *etc.ServiceConfig, username, pass string) (Client, error)
+	New(ctx context.Context, serviceConfig *ServiceConfig) (Client, error)
+	NewViaBasicAuth(ctx context.Context, serviceConfig *ServiceConfig, username, pass string) (Client, error)
 	GetType() string
 }

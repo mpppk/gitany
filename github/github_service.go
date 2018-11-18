@@ -8,7 +8,6 @@ import (
 
 	"github.com/google/go-github/github"
 	"github.com/mpppk/gitany"
-	"github.com/mpppk/gitany/etc"
 	"github.com/pkg/errors"
 	"golang.org/x/oauth2"
 )
@@ -62,13 +61,13 @@ func (c *Client) GetAuthorizations() gitany.AuthorizationsService {
 
 type ClientGenerator struct{}
 
-func (cb *ClientGenerator) New(ctx context.Context, serviceConfig *etc.ServiceConfig) (gitany.Client, error) {
+func (cb *ClientGenerator) New(ctx context.Context, serviceConfig *gitany.ServiceConfig) (gitany.Client, error) {
 	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: serviceConfig.Token})
 	tc := oauth2.NewClient(ctx, ts)
 	return newServiceFromClient(serviceConfig, &rawClient{Client: github.NewClient(tc)})
 }
 
-func (cb *ClientGenerator) NewViaBasicAuth(ctx context.Context, serviceConfig *etc.ServiceConfig, user, pass string) (gitany.Client, error) {
+func (cb *ClientGenerator) NewViaBasicAuth(ctx context.Context, serviceConfig *gitany.ServiceConfig, user, pass string) (gitany.Client, error) {
 	tp := github.BasicAuthTransport{
 		Username: strings.TrimSpace(user),
 		Password: strings.TrimSpace(pass),
@@ -80,7 +79,7 @@ func (cb *ClientGenerator) GetType() string {
 	return "github"
 }
 
-func newServiceFromClient(serviceConfig *etc.ServiceConfig, client RawClient) (gitany.Client, error) {
+func newServiceFromClient(serviceConfig *gitany.ServiceConfig, client RawClient) (gitany.Client, error) {
 	urlStr := serviceConfig.Protocol + "://api." + serviceConfig.Host
 	if !strings.HasSuffix(urlStr, "/") {
 		urlStr += "/"

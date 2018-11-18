@@ -10,7 +10,6 @@ import (
 	"context"
 
 	"github.com/mpppk/gitany"
-	"github.com/mpppk/gitany/etc"
 	"github.com/mpppk/gitany/gitlab"
 )
 
@@ -21,7 +20,7 @@ func TestGitLabIntegration(t *testing.T) {
 	}
 	gitany.RegisterClientGenerator(&gitlab.ClientGenerator{})
 
-	serviceConfig := &etc.ServiceConfig{
+	serviceConfig := &gitany.ServiceConfig{
 		Host:     "gitlab.com",
 		Type:     "gitlab",
 		Token:    token,

@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	"github.com/mpppk/gitany"
-	"github.com/mpppk/gitany/etc"
 	"github.com/pkg/errors"
 	"github.com/xanzy/go-gitlab"
 )
@@ -13,7 +12,7 @@ import (
 type repositoriesService struct {
 	raw           RawClient
 	host          string
-	serviceConfig *etc.ServiceConfig
+	serviceConfig *gitany.ServiceConfig
 }
 
 func (r *repositoriesService) GetURL(owner, repo string) (string, error) {
