@@ -33,7 +33,7 @@ func TestGitLabIntegration(t *testing.T) {
 	owner := "mpppk-test"
 	repoName := "test-repo"
 
-	client, err := gitany.GetClient(context.Background(), serviceConfig)
+	client, err := gitany.NewClient(context.Background(), serviceConfig)
 	if err != nil {
 		t.Fatal(err)
 	}
