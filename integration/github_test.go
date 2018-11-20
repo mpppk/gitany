@@ -33,7 +33,7 @@ func TestGitHubIntegration(t *testing.T) {
 
 	ctx := context.Background()
 
-	client, err := gitany.GetClient(context.Background(), serviceConfig)
+	client, err := gitany.NewClient(context.Background(), serviceConfig)
 	if err != nil {
 		t.Fatal(err)
 	}

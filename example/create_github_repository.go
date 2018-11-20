@@ -23,7 +23,7 @@ func main() {
 	}
 
 	config.Token = token
-	githubClient, err := gitany.GetClient(ctx, config)
+	githubClient, err := gitany.NewClient(ctx, config)
 	gitany.PanicIfErrorExist(err)
 
 	r := gitany.NewRepository("test")

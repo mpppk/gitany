@@ -16,7 +16,7 @@ func RegisterDefaultServiceConfig(serviceConfig *ServiceConfig) {
 	defaultServiceConfigs = append(defaultServiceConfigs, serviceConfig)
 }
 
-func GetClient(ctx context.Context, serviceConfig *ServiceConfig) (Client, error) {
+func NewClient(ctx context.Context, serviceConfig *ServiceConfig) (Client, error) {
 	for _, clientGenerator := range clientGenerators {
 		if clientGenerator.GetType() == serviceConfig.Type {
 			return clientGenerator.New(ctx, serviceConfig)
