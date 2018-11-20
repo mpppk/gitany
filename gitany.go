@@ -6,9 +6,14 @@ import (
 )
 
 var clientGenerators []ClientGenerator
+var defaultServiceConfigs []*ServiceConfig
 
 func RegisterClientGenerator(clientGenerator ClientGenerator) {
 	clientGenerators = append(clientGenerators, clientGenerator)
+}
+
+func RegisterDefaultServiceConfig(serviceConfig *ServiceConfig) {
+	defaultServiceConfigs = append(defaultServiceConfigs, serviceConfig)
 }
 
 func GetClient(ctx context.Context, serviceConfig *ServiceConfig) (Client, error) {
@@ -18,6 +23,15 @@ func GetClient(ctx context.Context, serviceConfig *ServiceConfig) (Client, error
 		}
 	}
 	return nil, errors.New("unknown serviceConfig type: " + serviceConfig.Type)
+}
+
+func NewDefaultServiceConfig(serviceType string) (*ServiceConfig, bool) {
+	for _, config := range defaultServiceConfigs {
+		if config.Type == serviceType {
+			return config, true
+		}
+	}
+	return nil, false
 }
 
 func CreateToken(ctx context.Context, serviceConfig *ServiceConfig, username, pass string) (string, error) {

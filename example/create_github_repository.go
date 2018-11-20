@@ -17,13 +17,12 @@ func main() {
 	}
 
 	ctx := context.Background()
-	config := &gitany.ServiceConfig{
-		Host:     "github.com",
-		Type:     "github",
-		Token:    token,
-		Protocol: "https",
+	config, ok := gitany.NewDefaultServiceConfig("github")
+	if !ok {
+		fmt.Println("github plugin of gitany does not imported")
 	}
 
+	config.Token = token
 	githubClient, err := gitany.GetClient(ctx, config)
 	gitany.PanicIfErrorExist(err)
 

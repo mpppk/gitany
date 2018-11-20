@@ -6,4 +6,10 @@ import (
 
 func init() {
 	gitany.RegisterClientGenerator(&ClientGenerator{})
+
+	gitany.RegisterDefaultServiceConfig(&gitany.ServiceConfig{
+		Host:     "gitlab.com",
+		Type:     "gitlab",
+		Protocol: "https",
+	})
 }
