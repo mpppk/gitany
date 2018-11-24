@@ -6,7 +6,6 @@ import (
 	"testing"
 
 	"github.com/mpppk/gitany"
-
 	"github.com/mpppk/gitany/mock"
 )
 
@@ -32,6 +31,33 @@ func TestRegisterClientGenerator(t *testing.T) {
 			clientGeneratorsLen := len(gitany.GetClientGenerators())
 			if clientGeneratorsLen != 1 {
 				t.Errorf("unexpected clientGenerators length: actual:%d, want:%d", clientGeneratorsLen, 1)
+			}
+		})
+	}
+}
+
+func TestRegisterDefaultServiceConfig(t *testing.T) {
+	type args struct {
+		serviceConfig *gitany.ServiceConfig
+	}
+	tests := []struct {
+		name string
+		args args
+	}{
+		{
+			name: "should add service config to defaultServiceConfigs",
+			args: args{
+				serviceConfig: &gitany.ServiceConfig{},
+			},
+		},
+	}
+	for _, tt := range tests {
+		gitany.ClearRegisteredDefaultServiceConfig()
+		t.Run(tt.name, func(t *testing.T) {
+			gitany.RegisterDefaultServiceConfig(tt.args.serviceConfig)
+			defaultServiceConfigsLen := len(gitany.GetDefaultServiceConfigs())
+			if defaultServiceConfigsLen != 1 {
+				t.Errorf("unexpected clientGenerators length: actual:%d, want:%d", defaultServiceConfigsLen, 1)
 			}
 		})
 	}
