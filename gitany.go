@@ -16,6 +16,10 @@ func RegisterDefaultServiceConfig(serviceConfig *ServiceConfig) {
 	defaultServiceConfigs = append(defaultServiceConfigs, serviceConfig)
 }
 
+func ClearRegisteredClientGenerator() {
+	clientGenerators = []ClientGenerator{}
+}
+
 func NewClient(ctx context.Context, serviceConfig *ServiceConfig) (Client, error) {
 	for _, clientGenerator := range clientGenerators {
 		if clientGenerator.GetType() == serviceConfig.Type {
