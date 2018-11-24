@@ -11,6 +11,13 @@ type ClientGenerator struct {
 	Type   string
 }
 
+func NewClientGenerator(serviceType string) *ClientGenerator {
+	return &ClientGenerator{
+		Client: NewClient(),
+		Type:   serviceType,
+	}
+}
+
 func (c *ClientGenerator) New(ctx context.Context, serviceConfig *gitany.ServiceConfig) (gitany.Client, error) {
 	return c.Client, nil
 }
